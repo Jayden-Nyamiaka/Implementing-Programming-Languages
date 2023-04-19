@@ -1,5 +1,5 @@
 # Implementing-Programming-Languages
-A dive into implementing interpreters and programming languages, taking a look at the specific implementation features that dictate languages from the "inside". Includes functional, imperative, untyped, dynamically typed, and statically typed languages.
+A dive into implementing interpreters and programming languages in OCaml, taking a look at the specific implementation features that dictate languages from the "inside". Includes functional, imperative, untyped, dynamically typed, and statically typed languages.
 
 Resources for the labs, projects, and assessments can be found at the following links
 - [Course Website](https://mvanier.github.io/cs131/2023/book/)
