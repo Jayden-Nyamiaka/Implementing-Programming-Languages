@@ -1,0 +1,25 @@
+;; Tests for homework problems in part C of assignment 1.
+
+(use tests/lab1c.imp)
+
+(check-expect (sigma3 0 3) 6)
+(check-expect (sigma3 0 0) 0)
+(check-expect (sigma3 5 5) 5)
+(check-expect (sigma3 4 6) 15)
+
+(check-expect (exp2 0 0) 1)
+(check-expect (exp2 1 0) 1)
+(check-expect (exp2 0 1) 0)
+(check-expect (exp2 1 1) 1)
+(check-expect (exp2 1 10) 1)
+(check-expect (exp2 5 3) 125)
+
+(check-expect (fact3 0) 1)
+(check-expect (fact3 3) 6)
+(check-expect (fact3 5) 120)
+
+(check-expect (fib3 0) 0)
+(check-expect (fib3 1) 1)
+(check-expect (fib3 2) 1)
+(check-expect (fib3 10) 55)
+

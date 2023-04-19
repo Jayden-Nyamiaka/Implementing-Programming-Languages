@@ -1,0 +1,9 @@
+;; Extra test script to test the and/or functionality added by students
+;; in part B of assignment 1.
+
+(check-error (/ 1 0))
+(check-expect (and 0 (/ 1 0)) 0)
+(check-expect (or 1 (/ 1 0)) 1)
+(check-expect (and (- 1 1) (/ 1 0)) 0)
+(check-expect (and 1 (+ 2 2)) 4)
+(check-expect (or (+ 2 2) (/ 1 0)) 4)

@@ -1,0 +1,62 @@
+;; Tests for homework problems in part A of assignment 1.
+
+(use tests/lab1a.imp)
+
+(check-expect (sigma1 0 3) 6)
+(check-expect (sigma1 0 0) 0)
+(check-expect (sigma1 5 5) 5)
+(check-expect (sigma1 4 6) 15)
+
+(check-expect (sigma2 0 3) 6)
+(check-expect (sigma2 0 0) 0)
+(check-expect (sigma2 5 5) 5)
+(check-expect (sigma2 4 6) 15)
+
+(check-expect (exp 0 0) 1)
+(check-expect (exp 1 0) 1)
+(check-expect (exp 0 1) 0)
+(check-expect (exp 1 1) 1)
+(check-expect (exp 1 10) 1)
+(check-expect (exp 5 3) 125)
+
+(check-expect (log 2 1) 0)
+(check-expect (log 2 2) 1)
+(check-expect (log 2 16) 4)
+(check-expect (log 10 100) 2)
+
+(check-expect (fact1 0) 1)
+(check-expect (fact1 3) 6)
+(check-expect (fact1 5) 120)
+
+(check-expect (fact2 0) 1)
+(check-expect (fact2 3) 6)
+(check-expect (fact2 5) 120)
+
+(check-expect (fib1 0) 0)
+(check-expect (fib1 1) 1)
+(check-expect (fib1 2) 1)
+(check-expect (fib1 10) 55)
+
+(check-expect (fib2 0) 0)
+(check-expect (fib2 1) 1)
+(check-expect (fib2 2) 1)
+(check-expect (fib2 10) 55)
+
+(check-expect (binary 0) 0)
+(check-expect (binary 1) 1)
+(check-expect (binary 2) 10)
+(check-expect (binary 3) 11)
+(check-expect (binary 4) 100)
+(check-expect (binary 5) 101)
+(check-expect (binary 6) 110)
+(check-expect (binary 7) 111)
+(check-expect (binary 8) 1000)
+(check-expect (binary 9) 1001)
+(check-expect (binary 10) 1010)
+(check-expect (binary 11) 1011)
+(check-expect (binary 12) 1100)
+(check-expect (binary 15) 1111)
+(check-expect (binary 16) 10000)
+(check-expect (binary 31) 11111)
+(check-expect (binary 32) 100000)
+

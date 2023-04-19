@@ -1,0 +1,12 @@
+;
+; Tests scoping by using the same variable in all scopes
+; simultaneously.
+;
+
+(val x 0)
+
+(define x (x) (+ x x))
+
+(check-expect x 0)
+(check-expect (x 1) 2)
+(check-expect (x x) 0)
