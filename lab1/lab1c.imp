@@ -1,0 +1,56 @@
+
+;; Part C
+
+;; sigma3: when m > n: returns n
+(define sigma3 (m n) (locals t)
+  (begin
+    (while* (< m n)  
+      (set t (+ t m) )  
+      (set m (+ m 1) )
+    )
+    (+ n t)
+  )
+)
+
+;; exp2: when n < 0: returns 1
+(define exp2 (b n) (locals t i)
+  (begin 
+    (set t 1)
+    (set i 0)
+    (while* (< i n) 
+      (set t (* t b) )  
+      (set i (+ i 1) )
+    )
+    t
+  ) 
+)
+
+;; fact3: when n < 0: returns 1
+(define fact3 (n) (locals t i)
+  (begin 
+    (set t 1)
+    (for (set i 1) (<= i n) (set i (+ i 1))
+      (set t (* t i) )  
+    )
+    t
+  ) 
+)
+
+;; fib3: when n < 0: returns 0
+(define fib3 (n) (locals f1 f2 i)
+  (if (< n 1)
+    0
+    (if (< n 3)
+      1
+      (begin 
+        (set f2 1)
+        (set f1 2)
+        (for (set i 3) (< i n) (set i (+ i 1))
+          (set f1 (+ f1 f2) )
+          (set f2 (- f1 f2) )
+        )
+        f1
+      )
+    )
+  ) 
+)

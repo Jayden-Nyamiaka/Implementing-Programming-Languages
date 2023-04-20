@@ -1,0 +1,165 @@
+
+;; Part A
+
+
+;; A.1: sigma
+
+;; sigma1: when m > n: returns 0
+(define sigma1 (m n) 
+  (if (> m n) 
+    0 
+    (+ m (sigma1 (+ m 1) n) ) 
+  ) 
+)
+
+
+;; sigma2: when m > n: returns n
+(val t 0)
+(define sigma2 (m n) 
+  (begin 
+    (set t 0)
+    (while (< m n) 
+      (begin 
+        (set t (+ t m) )  
+        (set m (+ m 1) )
+      )
+    )
+    (+ n t)
+  ) 
+)
+
+;; Alternative sigma2 implementation
+(define sigma2iter (m n t) 
+  (begin 
+    (while (< m n) 
+      (begin
+        (set t (+ t m))  
+        (set m (+ m 1))
+      )
+    ) 
+    t
+  )
+)
+(define sigma2 (m n) (+ n (sigma2iter m n 0) ) )
+
+
+
+;; A.2: exp and log
+
+;; exp: when n < 0: returns 1
+(val t 0)
+(val i 0)
+(define exp (b n) 
+  (begin 
+    (set t 1)
+    (set i 0)
+    (while (< i n) 
+      (begin 
+        (set t (* t b) )  
+        (set i (+ i 1) )
+      )
+    )
+    t
+  ) 
+)
+
+
+;; log: when b <= 1 or m <= 0: returns -1
+(val t 0)
+(val i 0)
+(define log (b m) 
+  (if (and (> b 1) (> m 0) )
+    (begin 
+      (set t 1)
+      (set i -1)
+      (while (<= t m) 
+        (begin 
+          (set t (* t b) )  
+          (set i (+ i 1) )
+        )
+      )
+      i
+    ) 
+    -1
+  )
+)
+
+
+
+;; A.3: fact
+
+;; fact1: when n < 0: returns 1
+(define fact1 (n) 
+  (if (< n 2) 
+    1
+    (* n (fact1 (- n 1)) ) 
+  ) 
+)
+
+
+;; fact2: when n < 0: returns 1
+(val t 0)
+(define fact2 (n) 
+  (begin 
+    (set t 1)
+    (while (> n 1) 
+      (begin 
+        (set t (* t n) )  
+        (set n (- n 1) )
+      )
+    )
+    t
+  ) 
+)
+
+
+
+;; A.4: fib
+
+;; fib1: when n < 0: returns 0
+(define fib1 (n) 
+  (if (< n 1)
+    0
+    (if (< n 3)
+      1
+      ( + (fib1 (- n 1)) (fib1 (- n 2)) )
+    )
+  ) 
+)
+
+
+;; fib2: when n < 0: returns 0
+(val f1 0)
+(val f2 0)
+(define fib2 (n) 
+  (if (< n 1)
+    0
+    (if (< n 3)
+      1
+      (begin 
+        (set f2 1)
+        (set f1 2)
+        (while (> n 3) 
+          (begin 
+            (set f1 (+ f1 f2) )
+            (set f2 (- f1 f2) )
+            (set n (- n 1) )
+          )
+        )
+        f1
+      )
+    )
+  ) 
+)
+
+
+
+;; A.5: binary
+
+;; binary: when n < 0: returns 0
+(define binary (n)
+  (if (> n 0)
+    (+ (mod n 2) (* 10 (binary (/ n 2))) )
+    0
+  )
+)
