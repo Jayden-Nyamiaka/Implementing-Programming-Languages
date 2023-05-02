@@ -1,0 +1,25 @@
+(library
+  (name sexprlib)
+  (modules loc sexpr lexer parser repl)
+  (modes byte) )
+
+(ocamllex lexer)
+
+(executable
+  (name lexer_test)
+  (libraries sexprlib)
+  (modules lexer_test)
+  (modes byte) )
+
+(executable
+  (name parser_test)
+  (libraries sexprlib)
+  (modules parser_test)
+  (modes byte) )
+
+(executable
+  (name repl_test)
+  (libraries sexprlib)
+  (modules repl_test)
+  (modes byte) )
+

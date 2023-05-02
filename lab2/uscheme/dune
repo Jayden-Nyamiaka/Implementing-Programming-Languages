@@ -1,0 +1,19 @@
+;(executable 
+;  (name uscheme)
+;  (modules ast basis env error eval ir quote uscheme)
+;  (libraries sexprlib)
+;  (modes byte) )
+
+(library
+  (name uschemelib)
+  (modules ast basis env error eval ir quote)
+  (libraries sexprlib)
+  (modes byte))
+
+(executable 
+  (name uscheme)
+  (modules uscheme)
+  (libraries uschemelib)
+  (modes byte) )
+
+(env (dev (flags (:standard -warn-error -A -g))))

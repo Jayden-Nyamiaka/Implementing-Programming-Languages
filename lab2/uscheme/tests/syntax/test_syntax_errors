@@ -1,0 +1,23 @@
+#! /bin/bash
+
+# Written by Karthik Nair.  Thanks Karthik!
+
+USCHEME=../../uscheme
+SYNTAX_TESTS="syntax_tests/*"
+passed=0
+total=0
+
+for test in $SYNTAX_TESTS; do
+    err=$($USCHEME $test 2>&1)
+    total=$((total + 1))
+    if [[ $err == *"Syntax error"* ]]; then
+        echo "$test: passed"
+        passed=$((passed + 1))
+    else
+        echo ">>>"
+        echo ">>> TEST FAILED: $test"
+        echo ">>>"
+    fi
+done
+
+echo "$passed/$total syntax tests passed."
