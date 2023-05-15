@@ -7,6 +7,19 @@ Resources for the labs, projects, and assessments can be found at the following 
 
 ## Grade Received: A+
 
+## Compile Instructions
+Each lab folder is an individual project that contains an implementation of a language in OCaml.
+- lab1: imp
+- lab2: µscheme (uscheme)
+- lab3: µscheme+ (uscheme_plus)
+TODO add descriptions for each language: Data types supported, type systems (statically vs dynamically), implementation details (evaluation rules; big arrows or small arrows)
+
+To compile any of the languages, cd into the appropriate "lab_" folder.
+  1. cd into the "sexpr" folder for that lab and run make.
+  1. cd into the folder with the same name as the language and run make.
+  1. To open the terminal compiler (TODO get this name later), run "rlwrap ./___language_name___"
+  1. To run the tests, run "make test" from the same folder as step 2.
+
 ## Caltech's Honor Code
 "No member of the Caltech community shall take unfair advantage of any other member of the Caltech community."
 
