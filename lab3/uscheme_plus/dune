@@ -1,0 +1,7 @@
+(executable 
+  (name uscheme_plus)
+  (modules ast basis env error eval fstack quote uscheme_plus)
+  (libraries sexprlib)
+  (modes byte) )
+
+(env (dev (flags (:standard -warn-error -A -g))))
