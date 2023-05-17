@@ -1,0 +1,7 @@
+(executable 
+  (name typed_imp)
+  (modules ast basis env error eval typecheck value typed_imp)
+  (libraries sexprlib)
+  (modes byte))
+
+(env (dev (flags (:standard -warn-error -A -g))))

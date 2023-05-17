@@ -1,0 +1,17 @@
+; Testing while loops.  Defines the factorial function
+; in terms of a loop.
+
+(check-expect (factorial 0) 1)
+(check-expect (factorial 1) 1)
+(check-expect (factorial 2) 2)
+(check-expect (factorial 3) 6)
+
+(val result 1)
+(define int factorial ([x : int])
+  (begin
+    (set result 1)
+    (while (> x 0) 
+      (begin
+        (set result (* result x))
+        (set x (- x 1))))
+    result))

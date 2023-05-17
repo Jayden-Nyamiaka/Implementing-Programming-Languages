@@ -1,0 +1,77 @@
+;; Tests of arrays.
+
+;; Define a simple array.
+
+(val arr1 (make-array 10 42))
+
+;;
+;; Some basic checks.
+;;
+
+(check-expect (array-at arr1 0) 42)
+(check-expect (array-at arr1 9) 42)
+
+(check-error (array-at arr1 -1))
+(check-error (array-at arr1 10))
+
+(check-type (array-at arr1 0) int)
+
+(check-type-error (array-at 0 arr1))
+(check-type-error (array-at #f arr1))
+(check-type-error (array-at #t arr1))
+(check-type-error (array-at #u arr1))
+(check-type-error (array-at arr1 #u))
+(check-type-error (array-at arr1 #f))
+(check-type-error (array-at arr1 #t))
+(check-type-error (array-at arr1 arr1))
+
+(check-expect (array-put arr1 9 10) #u)
+(check-expect (array-at arr1 9) 10)
+
+(check-type (array-put arr1 0 -1) unit)
+
+(check-type-error (array-put 0 0 0))
+(check-type-error (array-put #u 0 0))
+(check-type-error (array-put #f 0 0))
+(check-type-error (array-put #t 0 0))
+(check-type-error (array-put arr1 #u 0))
+(check-type-error (array-put arr1 #f 0))
+(check-type-error (array-put arr1 #t 0))
+(check-type-error (array-put arr1 arr1 0))
+(check-type-error (array-put arr1 0 #u))
+(check-type-error (array-put arr1 0 #f))
+(check-type-error (array-put arr1 0 #t))
+(check-type-error (array-put arr1 0 arr1))
+
+;; More involved tests.
+
+(define bool xor ([x : bool] [y : bool])
+  (if x (not y) y))
+
+(val arr2 (make-array 10 #t))
+
+(define bool even ([x : int])
+  (= x (* 2 (/ x 2))))
+
+;; Set the elements of `arr2` to whether their index is even.
+(val i 0)
+
+(while (< i 10)
+  (begin
+    (array-put arr2 i (even i))
+    (set i (+ i 1))))
+
+(val correct #t)
+
+;; check that the elements of the array are as expected.
+(set i 0)
+(while (< i 10)
+  (begin
+    (if (xor (even i) (array-at arr2 i))
+      (set correct #f)
+      #u)
+    (set i (+ i 1))))
+
+(check-expect correct #t)
+(check-expect (array-size arr2) 10)
+

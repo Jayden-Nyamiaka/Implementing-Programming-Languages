@@ -1,0 +1,13 @@
+;
+; Testing recursion with a simple factorial function.
+;
+
+(check-expect (factorial 0) 1)
+(check-expect (factorial 1) 1)
+(check-expect (factorial 2) 2)
+(check-expect (factorial 3) 6)
+
+(define int factorial ([x : int])
+  (if (< x 1)
+      1
+      (* x (factorial (- x 1)))))

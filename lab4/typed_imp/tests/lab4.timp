@@ -1,0 +1,106 @@
+;; Functions to write using arrays and local variables.
+
+;;
+;; Helper function: copy an array. 
+;; 
+
+(define (array int) copy-array ([arr : (array int)])
+  (locals
+    [i : int]
+    [len : int]
+    [result : (array int)])
+  (begin
+    (set i 0)
+    (set len (array-size arr))
+    (set result (make-array len 0))
+    (while (< i len)
+      (begin
+        (array-put result i (array-at arr i))
+        (set i (+ i 1))))
+    result))
+
+;;
+;; Helper function: Test if an array is sorted.
+;; 
+
+(define bool is-sorted ([arr : (array int)])
+  (locals
+    [i : int]
+    [len : int]
+    [result : bool])
+  (begin
+    (set i 1)
+    (set len (array-size arr))
+    (set result #t)
+    (while (< i len)
+      (begin
+        (if (< (array-at arr i) (array-at arr (- i 1)))
+            (set result #f)
+            #u)
+        (set i (+ i 1))))
+    result))
+
+;;
+;; Function 1: Minimum element sort.
+;;
+
+(define unit mesort ([arr : (array int)])
+  ;; TODO
+  )
+
+;;
+;; Function 2: Bubble sort.
+;;
+
+(define unit bsort ([arr : (array int)])
+  ;; TODO
+  )
+
+;; ---------------------------------------------------------------------- 
+;; Tests.
+;; ---------------------------------------------------------------------- 
+
+(val arr0 (make-array 0 0))
+
+(val arr0-to-test-1 (copy-array arr0))
+(check-type (mesort arr0-to-test-1) unit)
+(mesort arr0-to-test-1)
+(check-expect (= arr0-to-test-1 arr0) #t)
+
+(val arr0-to-test-2 (copy-array arr0))
+(check-type (bsort arr0-to-test-2) unit)
+(bsort arr0-to-test-2)
+(check-expect (= arr0-to-test-2 arr0) #t)
+
+(val arr1 (make-array 10 0))
+(array-put arr1 0 42)
+(array-put arr1 1 -10)
+(array-put arr1 2 1)
+(array-put arr1 3 4)
+(array-put arr1 4 0)
+(array-put arr1 5 42)
+(array-put arr1 6 55)
+(array-put arr1 7 101)
+(array-put arr1 8 9)
+(array-put arr1 9 43)
+
+(val arr1-sorted (make-array 10 0))
+(array-put arr1-sorted 0 -10)
+(array-put arr1-sorted 1 0)
+(array-put arr1-sorted 2 1)
+(array-put arr1-sorted 3 4)
+(array-put arr1-sorted 4 9)
+(array-put arr1-sorted 5 42)
+(array-put arr1-sorted 6 42)
+(array-put arr1-sorted 7 43)
+(array-put arr1-sorted 8 55)
+(array-put arr1-sorted 9 101)
+
+(val arr1-to-test-1 (copy-array arr1))
+(mesort arr1-to-test-1)
+(check-expect (= arr1-to-test-1 arr1-sorted) #t)
+
+(val arr1-to-test-2 (copy-array arr1))
+(bsort arr1-to-test-2)
+(check-expect (= arr1-to-test-2 arr1-sorted) #t)
+

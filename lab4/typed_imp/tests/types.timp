@@ -1,0 +1,6 @@
+(check-type 1 int)
+(check-type (+ 1 1) int)
+(check-type (print 48) unit)
+
+(check-function-type + (int int -> int))
+(check-type-error (+ 42 #f))

@@ -1,0 +1,53 @@
+TODO list for sexpr library
+---------------------------
+
+**********
+
+OLD STUFF:
+
+-- Convert parser to one using Menhir incremental parsing.
+
+-- Use symbols instead of strings for identifiers.  Also update the S-expression
+   reading to reflect this.
+
+-- Provide a generic S-expression pretty-printer that will print out
+   _readable_ S-expressions i.e.
+
+(define (factorial n)
+  (if (= n 0)
+      1
+      (* n (factorial (- n 1)))))
+
+   would print out as:
+
+(define
+  (factorial n)
+  (if
+    (= n 0)
+    1
+    (* n
+      (factorial
+        (- n 1)))))
+
+The point of this is to allow _all_ stages of a language to be represented as
+S-expressions.  All you need to do is provide to_sexpr and from_expr functions
+for each stage, and the s-expression version can be output and stored on disk,
+as well as reloaded.  This opens up a lot of possibilities for checking the
+correctness of student code!
+
+I imagine that the top level of a language will have new options:
+
+  --print-ast  ; pretty-print AST forms as S-expressions
+  --read-ast   ; read and evaluate AST instead of concrete syntax
+  --print-ir   ; same, with IR
+  --read-ir
+
+The big win here would be:
+
+  $ ./foolang --read-ast --print-ir foo_test_1.foo_ast
+
+whose output could be compared to the "correct" IR output.  This means I can
+check the correctness of every stage.  This would be invaluable for a compiler
+class!
+
+

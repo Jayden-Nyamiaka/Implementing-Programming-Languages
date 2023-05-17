@@ -1,0 +1,36 @@
+; Tests of local variables.
+
+; Check that locals shadowing works correctly.
+(define int test ([i : int])
+  (locals [i : int])
+  i)
+
+(check-expect (test 42) 0)
+
+(define int maxarray ([arr : (array int)])
+  (locals [i : int] [len : int] [result : int])
+  (begin
+    (set i 0)
+    (set len (array-size arr))
+    (set result -1000000)
+    (while (< i len)
+      (begin
+        (if (> (array-at arr i) result)
+           (set result (array-at arr i))
+           #u)
+        (set i (+ i 1))))
+    result))
+
+(val my-arr (make-array 10 0))
+(array-put my-arr 0 5)
+(array-put my-arr 1 9)
+(array-put my-arr 2 5)
+(array-put my-arr 3 0)
+(array-put my-arr 4 -1)
+(array-put my-arr 5 42)
+(array-put my-arr 6 1010)
+(array-put my-arr 7 -1001)
+(array-put my-arr 8 0)
+(array-put my-arr 9 12)
+
+(check-expect (maxarray my-arr) 1010)

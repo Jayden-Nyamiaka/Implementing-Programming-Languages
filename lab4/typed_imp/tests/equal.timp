@@ -1,0 +1,26 @@
+;; Equality testing.
+
+(check-expect (= #u #u) #t)
+(check-expect (!= #u #u) #f)
+
+(check-expect (= #t #t) #t)
+(check-expect (!= #t #t) #f)
+(check-expect (= #t #f) #f)
+(check-expect (!= #t #f) #t)
+
+(check-expect (= 1 1) #t)
+(check-expect (!= 1 1) #f)
+(check-expect (= 1 0) #f)
+(check-expect (!= 1 0) #t)
+
+(check-type (= 1 1) bool)
+(check-type-error (= 0 #t))
+(check-type-error (= 0 #u))
+(check-type-error (= #t #u))
+
+(check-expect (= (make-array 0 42) (make-array 0 43)) #t)
+(check-expect (= (make-array 10 42) (make-array 10 43)) #f)
+(check-expect (= (make-array 10 42) (make-array 10 42)) #t)
+(check-type-error (= (make-array 10 #f) (make-array 10 #u)))
+(check-type-error (= (make-array 0 #f) (make-array 0 #u)))
+
