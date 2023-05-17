@@ -7,8 +7,8 @@ Resources for the labs, projects, and assessments can be found at the following 
 
 ## Grade Received: A+
 
-## Compile Instructions
-Each lab folder is an individual project that contains an implementation of a language in OCaml.
+## Implemented Languages
+Each lab folder is an individual project that contains an implementation of a programming language in OCaml. The languages for each lab are as follows:
 - lab1: imp 
   - Featureless Imperative Language
   - Untyped / Unityped (Only Integers)
@@ -25,10 +25,13 @@ Each lab folder is an individual project that contains an implementation of a la
   - Small Step Operational Semantics: Continuation-Passing Interpretation via Stack Frames
   - Support for First-Class Functions, Variadic Functions, Control Flow Operators, and Tail-Call Optimization (TCO)
 - lab4: typed imp (typed_imp)
-  - Base Typed Language, Statically Typed, 
+  - Base Typed Language
+  - Statically Typed
+  - 
 
 TODO add descriptions for each language: Data types supported, type systems (statically vs dynamically), implementation details (evaluation rules; big arrows or small arrows)
 
+## Compile Instructions
 To compile any of the languages, cd into the appropriate "lab_#" folder.
   1. cd into the "sexpr" folder for that lab and run make.
   1. cd into the folder with the same name as the language and run make.
