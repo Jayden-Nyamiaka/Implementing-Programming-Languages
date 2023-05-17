@@ -10,20 +10,20 @@ Resources for the labs, projects, and assessments can be found at the following 
 ## Compile Instructions
 Each lab folder is an individual project that contains an implementation of a language in OCaml.
 - lab1: imp 
-  - Untyped / Unityped (Only Integers), Featureless Language, Big Step Operational Semantics, Direct Evaluation, Only Top-Level Functions, Simple Environment Model
+  - Featureless Imperative Language, Untyped / Unityped (Only Integers), Big Step Operational Semantics, Direct Evaluation, Only Top-Level Functions, Simple Environment Model
 - lab2: µscheme (uscheme)
-  - Dynamically Typed, Base Language, Big Step Operational Semantics, Intermediate Interpretation, First-Class Functions, Variadic Functions, Single Environment for All Bindings
+  - Base Mostly Functional Language, Dynamically Typed, Big Step Operational Semantics, Intermediate Interpretation, First-Class Functions, Variadic Functions, Single Environment for All Bindings
 - lab3: µscheme+ (uscheme_plus)
-  - Dynamically Typed, Mostly Functional, Small Step Operational Semantics, Continuation-Passing Interpretation via Stack Frames, First-Class Functions, Variadic Functions, Control Flow Operators, Tail-Call Optimization (TCO)
+  - Mostly Functional Language, Dynamically Typed, Small Step Operational Semantics, Continuation-Passing Interpretation via Stack Frames, First-Class Functions, Variadic Functions, Control Flow Operators, Tail-Call Optimization (TCO)
 - lab4: typed imp (typed_imp)
-  - Statically Typed, 
+  - Base Typed Language, Statically Typed, 
 
 TODO add descriptions for each language: Data types supported, type systems (statically vs dynamically), implementation details (evaluation rules; big arrows or small arrows)
 
-To compile any of the languages, cd into the appropriate "lab_" folder.
+To compile any of the languages, cd into the appropriate "lab_#" folder.
   1. cd into the "sexpr" folder for that lab and run make.
   1. cd into the folder with the same name as the language and run make.
-  1. To open the terminal compiler (TODO get this name later), run "rlwrap ./___language_name___"
+  1. To open the terminal REPL, run "rlwrap ./___language_name___"
   1. To run the tests, run "make test" from the same folder as step 2.
 
 ## Caltech's Honor Code
