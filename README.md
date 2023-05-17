@@ -9,9 +9,15 @@ Resources for the labs, projects, and assessments can be found at the following 
 
 ## Compile Instructions
 Each lab folder is an individual project that contains an implementation of a language in OCaml.
-- lab1: imp
+- lab1: imp 
+  - Untyped / Unityped (Only Integers), Featureless Language, Big Step Operational Semantics, Direct Evaluation, Only Top-Level Functions, Simple Environment Model
 - lab2: µscheme (uscheme)
+  - Dynamically Typed, Base Language, Big Step Operational Semantics, Intermediate Interpretation, First-Class Functions, Variadic Functions, Single Environment for All Bindings
 - lab3: µscheme+ (uscheme_plus)
+  - Dynamically Typed, Mostly Functional, Small Step Operational Semantics, Continuation-Passing Interpretation via Stack Frames, First-Class Functions, Variadic Functions, Control Flow Operators, Tail-Call Optimization (TCO)
+- lab4: typed imp (typed_imp)
+  - Statically Typed, 
+
 TODO add descriptions for each language: Data types supported, type systems (statically vs dynamically), implementation details (evaluation rules; big arrows or small arrows)
 
 To compile any of the languages, cd into the appropriate "lab_" folder.
