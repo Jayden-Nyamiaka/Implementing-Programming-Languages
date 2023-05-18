@@ -16,20 +16,20 @@ Each lab folder is an individual project that contains an implementation of a pr
   - Only Top-Level Functions
 - lab2: µscheme (uscheme)
   - Base Mostly Functional Language
-  - Dynamically Typed
+  - Dynamically Typed (Units, Booleans, Integers, Pairs/Lists, Functions)
   - Big Step Operational Semantics: Intermediate Interpretation with Single Environment for All Bindings
   - Support for First-Class Functions, Variadic Functions, and Function Closure
 - lab3: µscheme+ (uscheme_plus)
   - Mostly Functional Language
-  - Dynamically Typed
+  - Dynamically Typed (Units, Booleans, Integers, Pairs/Lists, Functions)
   - Small Step Operational Semantics: Continuation-Passing Interpretation via Stack Frames
   - Support for First-Class Functions, Variadic Functions, Function Closure, Control Flow Operators, and Tail-Call Optimization (TCO)
 - lab4: typed imp (typed_imp)
-  - Base Typed Language
-  - Statically Typed
-  - 
-
-TODO add descriptions for each language: Data types supported, type systems (statically vs dynamically), implementation details (evaluation rules; big arrows or small arrows)
+  - Base Typed Imperative Language
+  - Statically Typed, Monomorphic Type System (Units, Booleans, Integers, Arrays)
+  - Big Step Operational Semantics: Direct Evaluation with Simple Environment Model
+  - Big Step Type System Operational Semantics: Direct Type Checking with Simple Environment Model
+  - Only Top-Level Functions
 
 ## Compile Instructions
 To compile any of the languages, cd into the appropriate "lab_#" folder.
