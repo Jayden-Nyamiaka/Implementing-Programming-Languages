@@ -10,6 +10,7 @@ type error_tag =
   | RuntimeError     of string
   | SyntaxError      of string
   | TypeError        of string * string
+  | IndexError       of int
   | UnitTestError
   | UseError         of string * string
 
@@ -47,6 +48,9 @@ val syntax_err : Loc.loc -> string -> 'a
 
 (* Expected something of type `expected`; got something of type `found`. *)
 val type_err : Loc.loc -> expected: string -> found: string -> 'a
+
+(* The given array index is out of bounds (bounds are [0, Len - 1]). *)
+val index_err : Loc.loc -> int -> 'a
 
 (* A unit test was entered interactively. *)
 val unit_test_err : Loc.loc -> 'a

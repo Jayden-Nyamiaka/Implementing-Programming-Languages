@@ -7,6 +7,7 @@ type error_tag =
   | RuntimeError     of string
   | SyntaxError      of string
   | TypeError        of string * string
+  | IndexError       of int
   | UnitTestError
   | UseError         of string * string
 
@@ -37,6 +38,8 @@ let print_err (loc, tag) =
           Printf.eprintf "Runtime error: %s\n" msg
         | TypeError (expected, found) ->
           Printf.eprintf "Type error: expected %s; got %s\n" expected found
+        | IndexError i ->
+          Printf.eprintf "Array index out of bounds: %d\n" i
         | UnitTestError ->
           Printf.eprintf "Cannot run unit test in the REPL\n";
         | UseError (filename, msg) ->
@@ -64,6 +67,9 @@ let syntax_err l msg =
 
 let type_err l ~expected ~found = 
   err l (TypeError (expected, found))
+
+let index_err l idx = 
+  err l (IndexError idx)
 
 let unit_test_err l = 
   err l UnitTestError

@@ -9,6 +9,7 @@ type imp_type =
   | UnitType
   | BoolType
   | IntType
+  | ArrayType of imp_type
 
 type lit =
   | UnitLit
@@ -16,26 +17,31 @@ type lit =
   | IntLit  of int
 
 type exp = 
-  | Literal of loc * lit
-  | Var     of loc * id
-  | Set     of loc * id * exp
-  | If      of loc * exp * exp * exp
-  | While   of loc * exp * exp
-  | Begin   of loc * exp list
-  | Call    of loc * id * exp list
+  | Literal   of loc * lit
+  | Var       of loc * id
+  | Set       of loc * id * exp
+  | If        of loc * exp * exp * exp
+  | While     of loc * exp * exp
+  | Begin     of loc * exp list
+  | Call      of loc * id * exp list
   (* Printing, equality and array functions are polymorphic, so we need to
    * special-case them because the type system doesn't support
    * polymorphic types. *)
-  | Print   of loc * exp
-  | Println of loc * exp
-  | Eq      of loc * exp * exp
-  | Neq     of loc * exp * exp
+  | Print     of loc * exp
+  | Println   of loc * exp
+  | Eq        of loc * exp * exp
+  | Neq       of loc * exp * exp
+  | ArrayMake of loc * exp * exp
+  | ArrayAt   of loc * exp * exp
+  | ArrayPut  of loc * exp * exp * exp 
+  | ArraySize of loc * exp
 
 type function_decl = 
   { 
     ret     : imp_type;
     name    : id;
     formals : (id * imp_type) list;
+    locals  : (id * imp_type) list;
     body    : exp
   }
 

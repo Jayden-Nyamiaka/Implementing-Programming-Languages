@@ -40,21 +40,97 @@
         (set i (+ i 1))))
     result))
 
+
+;; Sort Helper Function: Int Array Element Swap
+(define unit ar-swap ([arr : (array int)] [i : int] [j : int])
+  (locals [temp : int])
+  (if (!= i j)
+    (begin
+      (set temp (array-at arr i))
+      (array-put arr i (array-at arr j))
+      (array-put arr j temp)
+    )
+    #u
+  )
+)
+
 ;;
 ;; Function 1: Minimum element sort.
 ;;
 
 (define unit mesort ([arr : (array int)])
-  ;; TODO
+  (locals 
+    [len : int]
+    [i : int]
+    [j : int]
+    [minVal : int]
+    [minIdx : int]
+    )
+  (begin
+    (set len (array-size arr))
+    (set i 0)
+    (while (< i (- len 1))
+      (begin
+        (set j (+ i 1))
+        (set minIdx i)
+        (set minVal (array-at arr i))
+        (while (< j len)
+          (begin 
+            (if (< (array-at arr j) minVal)
+                (begin
+                  (set minIdx j)
+                  (set minVal (array-at arr j))
+                )
+                #u
+            )
+            (set j (+ j 1))
+          )
+        )
+        (ar-swap arr i minIdx)
+        (set i (+ i 1))
+      )
+    )
+    #u
   )
+)
 
 ;;
 ;; Function 2: Bubble sort.
 ;;
 
 (define unit bsort ([arr : (array int)])
-  ;; TODO
+  (locals 
+    [len : int]
+    [i : int]
+    [j : int]
+    [haveSwapped : bool]
+    )
+  (begin
+    (set len (array-size arr))
+    (set i 0)
+    (set haveSwapped #t)
+    (while (if (< i len) haveSwapped #f)
+      (begin
+        (set j 1)
+        (set haveSwapped #f)
+        (while (< j (- len i))
+          (begin
+            (if (< (array-at arr j) (array-at arr (- j 1)))
+              (begin
+                (ar-swap arr j (- j 1))
+                (set haveSwapped #t)
+              )
+              #u
+            )
+            (set j (+ j 1))
+          )
+        )
+        (set i (+ i 1))
+      )
+    )
+    #u
   )
+)
 
 ;; ---------------------------------------------------------------------- 
 ;; Tests.

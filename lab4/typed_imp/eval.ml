@@ -24,9 +24,31 @@ type unit_test =
   | CheckTypeErrorTest of Loc.loc * exp
   | CheckFunTypeTest   of Loc.loc * id  * function_type
 
+(* These functions extract the value (int and array) from the type. *)
+let to_int l = function
+  | Value.Int i -> i
+  | _ -> Error.bug_in_type_checker_err l "int"
+let to_array l = function
+  | Value.Array a -> a
+  | _ -> Error.bug_in_type_checker_err l "array"
+
+(* Returns the default variable for each type 
+ * used in initializing local variables. *)
+let rec default_value_for_type = function
+  | UnitType -> Value.Unit
+  | BoolType -> Value.Bool false
+  | IntType -> Value.Int 0
+  | ArrayType base -> Value.Array (Array.make 0 (default_value_for_type base))
+
 (* The recursive expression evaluator.  Updates the environment to keep track of
  * changes to variables, and returns an integer value. *)
 let rec eval_expr env exp =
+  let rec deepcopy v = 
+    match v with 
+    | Value.Array ar -> 
+      Value.Array (Array.init (Array.length ar) (fun i -> deepcopy ar.(i)))
+    | _ -> v
+  in
   match exp with
     | Literal (_, UnitLit)   -> (env, Value.Unit)
     | Literal (_, BoolLit b) -> (env, Value.Bool b)
@@ -110,6 +132,35 @@ let rec eval_expr env exp =
       let (env', v1) = eval_expr env e1 in
       let (env'', v2) = eval_expr env' e2 in
         (env'', Value.Bool (not (Value.equal_values l v1 v2)))
+    
+    | ArrayMake (l, e1, e2) ->
+      let (env', len) = eval_expr env e1 in
+      let (env'', v) = eval_expr env' e2 in
+        (env'', Value.Array (Array.init (to_int l len) (fun _ -> deepcopy v)))
+
+    | ArrayAt (l, e1, e2) ->
+      let (env', ar) = eval_expr env e1 in
+      let (env'', idx) = eval_expr env' e2 in
+      let v_idx = to_int l idx in
+      let ret =
+        try Array.get (to_array l ar) v_idx with 
+          Invalid_argument _ -> Error.index_err l v_idx
+      in (env'', ret)
+
+    | ArrayPut (l, e1, e2, e3) ->
+      let (env', ar) = eval_expr env e1 in
+      let (env'', idx) = eval_expr env' e2 in
+      let (env''', v) = eval_expr env'' e3 
+      and v_idx = to_int l idx in
+      begin
+        (try Array.set (to_array l ar) v_idx v with 
+          Invalid_argument _ -> Error.index_err l v_idx);
+        (env''', Value.Unit)
+      end
+
+    | ArraySize (l, e) ->
+      let (env', ar) = eval_expr env e in
+        (env', Value.Int (Array.length (to_array l ar)))
 
 
 (* Evaluate an imp_func given its actual parameters, the source location of the 
@@ -117,8 +168,7 @@ let rec eval_expr env exp =
 and eval_function f loc actuals env = 
   match f with
     | Value.PrimFunction func -> func loc actuals env
-    | Value.UserFunction (formals, body) ->
-
+    | Value.UserFunction (formals, locals, body) ->
       let formal_bindings = 
         try 
           List.combine formals actuals
@@ -127,8 +177,8 @@ and eval_function f loc actuals env =
             ~found:(List.length actuals)
       in
 
-      (* Add formal parameter bindings to the calling environment. *)
-      let env' = Env.bind_locals env formal_bindings in
+      (* Add formal and local bindings to the calling environment. *)
+      let env' = Env.bind_locals env (formal_bindings @ locals) in
       (* Evaluate the body of the function. *)
         eval_expr env' body
 
@@ -235,9 +285,12 @@ let rec eval_def ({type_env; val_env} as env) def =
       let val_env, v = eval_expr val_env e in
         ({type_env; val_env}, Value (v, ty))
 
-    | Define (l, ({name; formals; body; _} as decl)) ->
+    | Define (l, ({name; formals; locals; body; _} as decl)) ->
       let type_env, funty = Typecheck.typecheck_define type_env l decl in
-      let func = Value.UserFunction (List.map fst formals, body) in
+      let locals' = 
+        List.map (fun (name, ty) -> (name, default_value_for_type ty)) locals
+      in
+      let func = Value.UserFunction (List.map fst formals, locals', body) in
       let val_env = Env.bind_fun val_env name func in
         ({type_env; val_env}, Function (name, funty))
 

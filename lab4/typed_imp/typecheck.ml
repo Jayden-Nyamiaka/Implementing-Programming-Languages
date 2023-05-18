@@ -19,6 +19,7 @@ let rec string_of_type = function
   | IntType     -> "int"
   | UnitType    -> "unit"
   | BoolType    -> "bool"
+  | ArrayType b -> "(array " ^ (string_of_type b) ^ ")" 
 
 let string_of_function_type {params; ret} = 
   let rec string_of_formals = function
@@ -33,6 +34,7 @@ let rec ty_eq t1 t2 =
     | (IntType,  IntType)  -> true
     | (UnitType, UnitType) -> true
     | (BoolType, BoolType) -> true
+    | (ArrayType b1, ArrayType b2) -> ty_eq b1 b2
     | _ -> false
 
 (* Function-type equality. *)
@@ -64,6 +66,16 @@ let assert_ty_eq l t1 t2 =
     ()
 
 let rec typecheck_expr env exp =
+  (* Typechecks ar, asserts ArrayType (error if not), & returns base type. *)
+  let array_base_type loc ar =
+    let ar_ty = typecheck_expr env ar in
+    match ar_ty with 
+      | ArrayType base -> base
+      | _ -> 
+        Error.type_err loc
+          ~expected: "an array"
+          ~found:    (string_of_type ar_ty)
+  in
   let get_var_ty = Env.lookup_var env in
   let typecheck = typecheck_expr env in
   match exp with
@@ -155,6 +167,30 @@ let rec typecheck_expr env exp =
                  (string_of_type ty2))
         else 
           BoolType
+      
+    | ArrayMake (l, len, v) ->
+      let len_ty = typecheck len 
+      and val_ty = typecheck v in
+      begin assert_ty_eq l IntType len_ty; ArrayType val_ty end
+
+    | ArrayAt (l, ar, idx) ->
+      let base_ty = array_base_type l ar
+      and idx_ty = typecheck idx in
+      begin assert_ty_eq l IntType idx_ty; base_ty end
+
+    | ArrayPut (l, ar, idx, v) ->
+      let base_ty = array_base_type l ar
+      and idx_ty = typecheck idx
+      and val_ty = typecheck v in
+      begin 
+        assert_ty_eq l IntType idx_ty; 
+        assert_ty_eq l base_ty val_ty;
+        UnitType
+      end
+
+    | ArraySize (l, ar) -> 
+      let _ = array_base_type l ar in IntType
+    
 
 
 let typecheck_val env l name e = 
@@ -170,13 +206,13 @@ let typecheck_val env l name e =
       Error.Imp_err (_, NameError _) ->
         (Env.bind_global env name ty, ty)
 
-let typecheck_define env l {ret; name; formals; body} =
+let typecheck_define env l {ret; name; formals; locals; body} =
   let params = List.map snd formals in
   let fun_ty = {params; ret} in
   let typecheck_body env =
     (* Create a new environment with the arguments bound for type-checking 
      * the body. *)
-    let env' = Env.bind_locals env formals in
+    let env' = Env.bind_locals env (formals @ locals) in
     let body_ty = typecheck_expr env' body in
       if not (ty_eq body_ty ret) then 
         err l ret body_ty

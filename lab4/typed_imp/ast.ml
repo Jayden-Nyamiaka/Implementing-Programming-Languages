@@ -6,6 +6,7 @@ open Sexpr
 module StringSet = Set.Make(String)
 
 let keywords = [
+  "locals";
   "val";
   "define";
   "use";
@@ -22,6 +23,10 @@ let keywords = [
   "println";
   "=";
   "!=";
+  "make-array";
+  "array-at";
+  "array-put";
+  "array-size";
 ]
 
 let reserved_ids = [
@@ -30,7 +35,8 @@ let reserved_ids = [
   "#u";
   "int";
   "bool";
-  "unit"
+  "unit";
+  "array";
 ]
 
 type id = string
@@ -39,6 +45,7 @@ type imp_type =
   | UnitType
   | BoolType
   | IntType
+  | ArrayType of imp_type
 
 type lit =
   | UnitLit
@@ -46,23 +53,28 @@ type lit =
   | IntLit  of int
 
 type exp = 
-  | Literal of loc * lit
-  | Var     of loc * id
-  | Set     of loc * id * exp
-  | If      of loc * exp * exp * exp
-  | While   of loc * exp * exp
-  | Begin   of loc * exp list
-  | Call    of loc * id * exp list
-  | Print   of loc * exp
-  | Println of loc * exp
-  | Eq      of loc * exp * exp
-  | Neq     of loc * exp * exp
+  | Literal   of loc * lit
+  | Var       of loc * id
+  | Set       of loc * id * exp
+  | If        of loc * exp * exp * exp
+  | While     of loc * exp * exp
+  | Begin     of loc * exp list
+  | Call      of loc * id * exp list
+  | Print     of loc * exp
+  | Println   of loc * exp
+  | Eq        of loc * exp * exp
+  | Neq       of loc * exp * exp
+  | ArrayMake of loc * exp * exp
+  | ArrayAt   of loc * exp * exp
+  | ArrayPut  of loc * exp * exp * exp 
+  | ArraySize of loc * exp
 
 type function_decl = 
   { 
     ret     : imp_type;
     name    : id;
     formals : (id * imp_type) list;
+    locals  : (id * imp_type) list;
     body    : exp
   }
 
@@ -84,17 +96,21 @@ type def =
   | CheckFunType   of loc * id * function_type
 
 let loc_of_exp = function
-  | Literal (l, _)
-  | Var     (l, _)
-  | Set     (l, _, _)
-  | If      (l, _, _, _)
-  | While   (l, _, _)
-  | Begin   (l, _)
-  | Call    (l, _, _)
-  | Print   (l, _)
-  | Println (l, _)
-  | Eq      (l, _, _)
-  | Neq     (l, _, _)
+  | Literal   (l, _)
+  | Var       (l, _)
+  | Set       (l, _, _)
+  | If        (l, _, _, _)
+  | While     (l, _, _)
+  | Begin     (l, _)
+  | Call      (l, _, _)
+  | Print     (l, _)
+  | Println   (l, _)
+  | Eq        (l, _, _)
+  | Neq       (l, _, _)
+  | ArrayMake (l, _, _)
+  | ArrayAt   (l, _, _)
+  | ArrayPut  (l, _, _, _)
+  | ArraySize (l, _)
       -> l
 
 let loc_of_def = function
@@ -175,7 +191,23 @@ let rec parse_expr = function
     Neq (l, parse_expr e1, parse_expr e2)
   | List (l, (Id (_, "!=") :: _)) -> error l "invalid \"!=\""
 
+  (* Array forms (built-in polymorphic functions) *)
+  | List (l, [Id (_, "make-array"); e1; e2]) -> 
+    ArrayMake (l, parse_expr e1, parse_expr e2)
+  | List (l, (Id (_, "make-array") :: _)) -> error l "invalid \"make-array\""
 
+  | List (l, [Id (_, "array-at"); e1; e2]) -> 
+    ArrayAt (l, parse_expr e1, parse_expr e2)
+  | List (l, (Id (_, "array-at") :: _)) -> error l "invalid \"array-at\""
+
+  | List (l, [Id (_, "array-put"); e1; e2; e3]) -> 
+    ArrayPut (l, parse_expr e1, parse_expr e2, parse_expr e3)
+  | List (l, (Id (_, "array-put") :: _)) -> error l "invalid \"array-put\""
+
+  | List (l, [Id (_, "array-size"); e]) -> ArraySize (l, parse_expr e)
+  | List (l, (Id (_, "array-size") :: _)) -> error l "invalid \"array-size\""
+
+  (* If the form is identifiable by a keyword, assume its a function call *)
   | List (l, Id (_, fname) :: es) -> Call (l, fname, List.map parse_expr es)
 
   | List (l, _) -> error l "unrecognized form"
@@ -184,23 +216,19 @@ let rec parse_type = function
   | Id (_, "unit") -> UnitType
   | Id (_, "bool") -> BoolType
   | Id (_, "int")  -> IntType
-  | Id (l, _)      -> error l "bad type name"
+  | List (_, [Id (_, "array"); typ]) -> 
+    ArrayType (parse_type typ)
 
-  | List (l, _) -> error l "bad type name"
-
-  | Int (l, _) -> error l "bad type name"
+  | Id (l, _)
+  | List (l, _)
+  | Int (l, _) 
+      -> error l "bad type name"
 
 (* Syntax analysis for definitions. *)
-let parse_def = function
-  | List (l, [Id (_, "val"); Id (_, name); init]) ->
-    let name' = validate_name l name in
-      Val (l, name', parse_expr init)
-  | List (l, Id (_, "val") :: _) -> error l "invalid \"val\""
-
-  | List (l, [Id (_, "define"); ty; Id (_, name); List (fl, formals); body]) ->
-    (* Convert the formal parameters to strings. *)
-    let parse_formal =
-      let err l = error l "bad formal parameter" in
+let parse_def v =
+  let parse_args al str_arg_type args =  
+    let parse_arg =
+      let err l = error l ("bad " ^ str_arg_type) in
         function
           | List (l, [Id (_, name); Id (_, ":"); ty]) -> 
             let name' = validate_name l name in
@@ -209,16 +237,34 @@ let parse_def = function
           | Id   (l, _) -> err l
           | Int  (l, _) -> err l
     in
-    let formals' = List.map parse_formal formals in
+    let args' = List.map parse_arg args in
+    (* Convert the formal parameters to strings. *)
+    let arg_names = List.map fst args' in
+    if unique_ids arg_names then
+      args'
+    else
+      error al ("non-unique " ^ str_arg_type ^ " names")
+  in
+  match v with
+  | List (l, [Id (_, "val"); Id (_, name); init]) ->
+    let name' = validate_name l name in
+      Val (l, name', parse_expr init)
+  | List (l, Id (_, "val") :: _) -> error l "invalid \"val\""
+
+  | List (l, [Id (_, "define"); ty; Id (_, name); List (fl, formals); body]) ->
+    let formals' = parse_args fl "formal parameter" formals in
     let ret      = parse_type ty in
     let body     = parse_expr body in
+      Define (l, {ret; name; formals=formals'; locals=[]; body})
 
-    (* Check that the formal parameter names are unique. *)
-    let formal_names = List.map fst formals' in
-      if unique_ids formal_names then
-        Define (l, {ret; name; formals=formals'; body})
-      else
-        error fl "non-unique formal parameter names"
+  | List (l, [Id (_, "define"); ty; Id (_, name); List (fl, formals); 
+      List (ll, Id (_, "locals") :: locals); body]) ->
+    let formals' = parse_args fl "formal parameter" formals in
+    let locals'  = parse_args ll "local variable" locals in
+    let ret      = parse_type ty in
+    let body     = parse_expr body in
+      Define (l, {ret; name; formals=formals'; locals=locals'; body})
+
   | List (l, Id (_, "define") :: _) -> error l "invalid \"define\""
 
   | List (l, [Id (_, "use"); Id (_, filename)]) -> Use (l, filename)
