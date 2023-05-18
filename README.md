@@ -18,12 +18,12 @@ Each lab folder is an individual project that contains an implementation of a pr
   - Base Mostly Functional Language
   - Dynamically Typed
   - Big Step Operational Semantics: Intermediate Interpretation with Single Environment for All Bindings
-  - Support for First-Class Functions and Variadic Functions
+  - Support for First-Class Functions, Variadic Functions, and Function Closure
 - lab3: µscheme+ (uscheme_plus)
   - Mostly Functional Language
   - Dynamically Typed
   - Small Step Operational Semantics: Continuation-Passing Interpretation via Stack Frames
-  - Support for First-Class Functions, Variadic Functions, Control Flow Operators, and Tail-Call Optimization (TCO)
+  - Support for First-Class Functions, Variadic Functions, Function Closure, Control Flow Operators, and Tail-Call Optimization (TCO)
 - lab4: typed imp (typed_imp)
   - Base Typed Language
   - Statically Typed
